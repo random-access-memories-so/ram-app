@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/random-access-memories-so/ram-app/static/css/main.8c8b27cf.chunk.css",
-    "main.js": "/random-access-memories-so/ram-app/static/js/main.1b4a7558.chunk.js",
-    "main.js.map": "/random-access-memories-so/ram-app/static/js/main.1b4a7558.chunk.js.map",
+    "main.js": "/random-access-memories-so/ram-app/static/js/main.a2c91fe3.chunk.js",
+    "main.js.map": "/random-access-memories-so/ram-app/static/js/main.a2c91fe3.chunk.js.map",
     "runtime-main.js": "/random-access-memories-so/ram-app/static/js/runtime-main.5eb31d8f.js",
     "runtime-main.js.map": "/random-access-memories-so/ram-app/static/js/runtime-main.5eb31d8f.js.map",
     "static/js/2.30490715.chunk.js": "/random-access-memories-so/ram-app/static/js/2.30490715.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.5eb31d8f.js",
     "static/js/2.30490715.chunk.js",
     "static/css/main.8c8b27cf.chunk.css",
-    "static/js/main.1b4a7558.chunk.js"
+    "static/js/main.a2c91fe3.chunk.js"
   ]
 }
