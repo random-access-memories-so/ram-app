@@ -24,6 +24,7 @@
     "@types/react-router-dom": "^5.3.0",
     "base58": "^2.0.1",
     "borsh": "^0.6.0",
+    "mui-modal-provider": "^1.5.0",
     "notistack": "^1.0.10",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.2",

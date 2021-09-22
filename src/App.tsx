@@ -10,6 +10,7 @@ import {
     Route,
 } from "react-router-dom";
 import ARViewer from './components/ARViewer';
+import ModalProvider, { useModal } from "mui-modal-provider";
 
 const theme = createTheme({
   palette: {
@@ -45,19 +46,21 @@ const theme = createTheme({
 const App: FC = () => {
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <SnackbarProvider>
-                <Router>
-                    <Route path="/">
-                        <Wallet>
-                            <Home />
-                        </Wallet>
-                    </Route>
-                    <Route path="/ar/:base64modelUri">
-                        <ARViewer />
-                    </Route>
-                </Router>
-            </SnackbarProvider>
+            <ModalProvider beta={true}>
+                <CssBaseline />
+                <SnackbarProvider>
+                    <Router>
+                        <Route path="/">
+                            <Wallet>
+                                <Home />
+                            </Wallet>
+                        </Route>
+                        <Route path="/ar/:base64modelUri">
+                            <ARViewer />
+                        </Route>
+                    </Router>
+                </SnackbarProvider>
+            </ModalProvider>
         </ThemeProvider>
     );
 };

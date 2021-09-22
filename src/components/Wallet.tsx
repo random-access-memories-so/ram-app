@@ -14,7 +14,7 @@ import React, { FC, useCallback, useMemo } from 'react';
 import Navigation from './Navigation';
 
 const Wallet: FC = ({children}) => {
-    const network = WalletAdapterNetwork.Mainnet;
+    const network = WalletAdapterNetwork.Devnet;
     const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
     // @solana/wallet-adapter-wallets imports all the adapters but supports tree shaking --

@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, Dialog, DialogActions, DialogContent, IconButton, Tooltip, Typography } from "@material-ui/core";
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, Dialog, DialogActions, DialogContent, DialogProps, IconButton, Tooltip, Typography } from "@material-ui/core";
 import { Skeleton } from '@material-ui/lab';
 import { FC, useEffect, useMemo, useState } from "react";
 import { IMetadataExtension, Metadata } from "../tools/metadata";
@@ -6,6 +6,7 @@ import '@google/model-viewer/dist/model-viewer';
 import QRCode from "qrcode.react";
 import { Close, PlayArrow, MobileScreenShare, Send } from "@material-ui/icons";
 import CassettePlayer from "./CassettePlayer";
+import { useModal } from "mui-modal-provider";
 
 export interface NFTProps {
     metadata: Metadata;
@@ -17,14 +18,31 @@ const ModelViewer: FC<{src: string}> = (props: {src: string}) => {
         src={props.src}
         auto-rotate
         rotation-per-second="30deg"
-        style={{minHeight: 400, width: "100%"}}
+        style={{height: "30vh", width: "100%"}}
     />
+};
+
+type CassettePlayerDialogProps = DialogProps;
+
+const CassettePlayerDialog: FC<CassettePlayerDialogProps> = ({...props}) => {
+    const [open, setOpen] = useState(true);
+
+    return <Dialog fullScreen={true} {...props} open={open}>
+        <DialogActions>
+            <IconButton onClick={() => setOpen(false)}>
+                <Close />
+            </IconButton>
+        </DialogActions>
+        <CassettePlayer />
+    </Dialog>;
 };
 
 const NFT: FC<NFTProps> = (props: NFTProps) => {
     const {metadata} = props;
     const [metadataExtension, setMetadataExtension] = useState<IMetadataExtension>()
     const [open, setOpen] = useState(false);
+
+    const { showModal } = useModal();
 
     useEffect(() => {
         async function fetchMetadataExtension() {
@@ -43,45 +61,47 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
     return (
         <Card
             variant="outlined"
-            //style={{height: "30vh"}}
+            style={{height: "100%", display: "flex", justifyContent: "flex-between", flexDirection: "column"}}
         >
-            {modelUri
-                ? <ModelViewer src={modelUri} />
-                : metadataExtension
-                ? <CardMedia
-                    component="img"
-                    style={{width: "auto", maxHeight: "30vh", margin: "auto"}}
-                    src={metadataExtension?.image}
-                />
-                : <Skeleton height="100%" />
-            }
-            <CardContent>
-                <Typography variant="h5">
-                    {metadata.data.name}
-                </Typography>
-                <Typography>
-                    {metadataExtension?.description}
-                </Typography>
-                <>
-                    {metadataExtension?.attributes?.map((attribute) =>
-                        <Box m={1} display="inline">
-                            <Chip
-                                component="div"
-                                style={{height: "100%"}}
-                                label={(
-                                    <Box m={1}>
-                                        <Typography>
-                                            {attribute.trait_type}
-                                        </Typography>
-                                        <Typography color="textSecondary">
-                                            {attribute.value}
-                                        </Typography>
-                                    </Box>
-                                )}
-                            />
-                        </Box>
-                    )}
-                </>
+            <CardContent style={{flexGrow: 1}}>
+                {modelUri
+                    ? <ModelViewer src={modelUri} />
+                    : metadataExtension
+                    ? <CardMedia
+                        component="img"
+                        style={{width: "auto", height: "30vh", margin: "auto"}}
+                        src={metadataExtension?.image}
+                    />
+                    : <Skeleton height="100%" />
+                }
+                <div>
+                    <Typography variant="h5">
+                        {metadata.data.name}
+                    </Typography>
+                    <Typography>
+                        {metadataExtension?.description}
+                    </Typography>
+                    <>
+                        {metadataExtension?.attributes?.map((attribute) =>
+                            <Box m={1} display="inline">
+                                <Chip
+                                    component="div"
+                                    style={{height: "100%"}}
+                                    label={(
+                                        <Box m={1}>
+                                            <Typography>
+                                                {attribute.trait_type}
+                                            </Typography>
+                                            <Typography color="textSecondary">
+                                                {attribute.value}
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                />
+                            </Box>
+                        )}
+                    </>
+                </div>
                 {/* {JSON.stringify(metadata.data.creators)} */}
             </CardContent>
             <CardActions>
@@ -99,12 +119,13 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
                                 <Send />
                             </IconButton>
                         </Tooltip>
-                        <Button variant="outlined" endIcon={<PlayArrow />}>
+                        <Button
+                            variant="outlined"
+                            endIcon={<PlayArrow />}
+                            onClick={() => showModal(CassettePlayerDialog)}
+                        >
                             Play mixtape
                         </Button>
-                        <Dialog open={true} fullScreen={true}>
-                            <CassettePlayer />
-                        </Dialog>
                         <Dialog open={open} onClose={() => setOpen(false)}>
                             <DialogActions>
                                 <IconButton onClick={() => setOpen(false)}>
