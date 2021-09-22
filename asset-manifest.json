@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/static/css/main.8c8b27cf.chunk.css",
-    "main.js": "/static/js/main.7cbb04c1.chunk.js",
-    "main.js.map": "/static/js/main.7cbb04c1.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.3f69ed6a.js",
-    "runtime-main.js.map": "/static/js/runtime-main.3f69ed6a.js.map",
-    "static/js/2.febb6e9e.chunk.js": "/static/js/2.febb6e9e.chunk.js",
-    "static/js/2.febb6e9e.chunk.js.map": "/static/js/2.febb6e9e.chunk.js.map",
-    "static/js/3.de8b4da2.chunk.js": "/static/js/3.de8b4da2.chunk.js",
-    "static/js/3.de8b4da2.chunk.js.map": "/static/js/3.de8b4da2.chunk.js.map",
-    "index.html": "/index.html",
-    "static/css/main.8c8b27cf.chunk.css.map": "/static/css/main.8c8b27cf.chunk.css.map",
-    "static/js/2.febb6e9e.chunk.js.LICENSE.txt": "/static/js/2.febb6e9e.chunk.js.LICENSE.txt"
+    "main.css": "/random-access-memories-so/ram-app/static/css/main.8c8b27cf.chunk.css",
+    "main.js": "/random-access-memories-so/ram-app/static/js/main.1b4a7558.chunk.js",
+    "main.js.map": "/random-access-memories-so/ram-app/static/js/main.1b4a7558.chunk.js.map",
+    "runtime-main.js": "/random-access-memories-so/ram-app/static/js/runtime-main.5eb31d8f.js",
+    "runtime-main.js.map": "/random-access-memories-so/ram-app/static/js/runtime-main.5eb31d8f.js.map",
+    "static/js/2.30490715.chunk.js": "/random-access-memories-so/ram-app/static/js/2.30490715.chunk.js",
+    "static/js/2.30490715.chunk.js.map": "/random-access-memories-so/ram-app/static/js/2.30490715.chunk.js.map",
+    "static/js/3.de8b4da2.chunk.js": "/random-access-memories-so/ram-app/static/js/3.de8b4da2.chunk.js",
+    "static/js/3.de8b4da2.chunk.js.map": "/random-access-memories-so/ram-app/static/js/3.de8b4da2.chunk.js.map",
+    "index.html": "/random-access-memories-so/ram-app/index.html",
+    "static/css/main.8c8b27cf.chunk.css.map": "/random-access-memories-so/ram-app/static/css/main.8c8b27cf.chunk.css.map",
+    "static/js/2.30490715.chunk.js.LICENSE.txt": "/random-access-memories-so/ram-app/static/js/2.30490715.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.3f69ed6a.js",
-    "static/js/2.febb6e9e.chunk.js",
+    "static/js/runtime-main.5eb31d8f.js",
+    "static/js/2.30490715.chunk.js",
     "static/css/main.8c8b27cf.chunk.css",
-    "static/js/main.7cbb04c1.chunk.js"
+    "static/js/main.1b4a7558.chunk.js"
   ]
 }
