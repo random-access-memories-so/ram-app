@@ -1,10 +1,11 @@
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, Dialog, DialogActions, DialogContent, IconButton, Typography } from "@material-ui/core";
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Chip, Dialog, DialogActions, DialogContent, IconButton, Tooltip, Typography } from "@material-ui/core";
 import { Skeleton } from '@material-ui/lab';
 import { FC, useEffect, useMemo, useState } from "react";
 import { IMetadataExtension, Metadata } from "../tools/metadata";
 import '@google/model-viewer/dist/model-viewer';
 import QRCode from "qrcode.react";
-import { Close } from "@material-ui/icons";
+import { Close, PlayArrow, MobileScreenShare, Send } from "@material-ui/icons";
+import CassettePlayer from "./CassettePlayer";
 
 export interface NFTProps {
     metadata: Metadata;
@@ -42,13 +43,14 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
     return (
         <Card
             variant="outlined"
-            style={{height: "100%"}}
+            //style={{height: "30vh"}}
         >
             {modelUri
                 ? <ModelViewer src={modelUri} />
                 : metadataExtension
                 ? <CardMedia
                     component="img"
+                    style={{width: "auto", maxHeight: "30vh", margin: "auto"}}
                     src={metadataExtension?.image}
                 />
                 : <Skeleton height="100%" />
@@ -85,10 +87,24 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
             <CardActions>
                 {modelUri &&
                     <>
-                        <Button
-                            variant="outlined"
-                            onClick={() => setOpen(true)}
-                        >AR QR code</Button>
+                        <Tooltip title="View on mobile">
+                            <IconButton
+                                onClick={() => setOpen(true)}
+                            >
+                                <MobileScreenShare />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Send NFT">
+                            <IconButton>
+                                <Send />
+                            </IconButton>
+                        </Tooltip>
+                        <Button variant="outlined" endIcon={<PlayArrow />}>
+                            Play mixtape
+                        </Button>
+                        <Dialog open={true} fullScreen={true}>
+                            <CassettePlayer />
+                        </Dialog>
                         <Dialog open={open} onClose={() => setOpen(false)}>
                             <DialogActions>
                                 <IconButton onClick={() => setOpen(false)}>
@@ -97,14 +113,14 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
                             </DialogActions>
                             <Box m={4}>
                                 <QRCode
-                                    value={`${window.location.href}/ar/${btoa(modelUri)}`}
+                                    value={`${window.location.href}ar/${btoa(modelUri)}`}
                                     size={512}
                                     renderAs="canvas"
                                 />
                             </Box>
                             <DialogContent>
                                 <Typography>
-                                    Scan with mobile to view your blockjam
+                                    Scan with mobile to view your NFT in AR
                                 </Typography>
                             </DialogContent>
                         </Dialog>

@@ -6,7 +6,7 @@ import { deepPurple, grey } from '@material-ui/core/colors';
 import { SnackbarProvider } from 'notistack';
 import Home from './pages/Home';
 import {
-    BrowserRouter as Router,
+    HashRouter as Router,
     Route,
 } from "react-router-dom";
 import ARViewer from './components/ARViewer';
