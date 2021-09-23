@@ -18,7 +18,8 @@ const ModelViewer: FC<{src: string}> = (props: {src: string}) => {
         src={props.src}
         auto-rotate
         rotation-per-second="30deg"
-        style={{height: "30vh", width: "100%"}}
+        camera-controls
+        style={{height: "25vh", width: "100%"}}
     />
 };
 
@@ -37,11 +38,37 @@ const CassettePlayerDialog: FC<CassettePlayerDialogProps> = ({...props}) => {
     </Dialog>;
 };
 
-const NFT: FC<NFTProps> = (props: NFTProps) => {
-    const {metadata} = props;
-    const [metadataExtension, setMetadataExtension] = useState<IMetadataExtension>()
-    const [open, setOpen] = useState(false);
+type QrCodeDaliogProps = DialogProps & {
+    modelUri: string
+};
 
+const QrCodeDialog: FC<QrCodeDaliogProps> = ({modelUri, ...props}) => {
+    const [open, setOpen] = useState(true);
+
+    return <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogActions>
+            <IconButton onClick={() => setOpen(false)}>
+                <Close />
+            </IconButton>
+        </DialogActions>
+        <Box m={4}>
+            <QRCode
+                value={`${window.location.href}ar/${btoa(modelUri)}`}
+                size={512}
+                renderAs="canvas"
+            />
+        </Box>
+        <DialogContent>
+            <Typography>
+                Scan with mobile to view your NFT in AR
+            </Typography>
+        </DialogContent>
+    </Dialog>;
+};
+
+const NFT: FC<NFTProps> = (props: NFTProps) => {
+    const { metadata } = props;
+    const [metadataExtension, setMetadataExtension] = useState<IMetadataExtension>()
     const { showModal } = useModal();
 
     useEffect(() => {
@@ -69,10 +96,10 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
                     : metadataExtension
                     ? <CardMedia
                         component="img"
-                        style={{width: "auto", height: "30vh", margin: "auto"}}
+                        style={{width: "auto", height: "25vh", margin: "auto"}}
                         src={metadataExtension?.image}
                     />
-                    : <Skeleton height="100%" />
+                    : <Skeleton variant="rect" style={{height: "30vh"}} />
                 }
                 <div>
                     <Typography variant="h5">
@@ -81,7 +108,7 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
                     <Typography>
                         {metadataExtension?.description}
                     </Typography>
-                    <>
+                    <Box m={1}>
                         {metadataExtension?.attributes?.map((attribute) =>
                             <Box m={1} display="inline">
                                 <Chip
@@ -100,7 +127,7 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
                                 />
                             </Box>
                         )}
-                    </>
+                    </Box>
                 </div>
                 {/* {JSON.stringify(metadata.data.creators)} */}
             </CardContent>
@@ -109,16 +136,16 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
                     <>
                         <Tooltip title="View on mobile">
                             <IconButton
-                                onClick={() => setOpen(true)}
+                                onClick={() => showModal(QrCodeDialog, {modelUri})}
                             >
                                 <MobileScreenShare />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="Send NFT">
+                        {/* <Tooltip title="Send NFT">
                             <IconButton>
                                 <Send />
                             </IconButton>
-                        </Tooltip>
+                        </Tooltip> */}
                         <Button
                             variant="outlined"
                             endIcon={<PlayArrow />}
@@ -126,25 +153,6 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
                         >
                             Play mixtape
                         </Button>
-                        <Dialog open={open} onClose={() => setOpen(false)}>
-                            <DialogActions>
-                                <IconButton onClick={() => setOpen(false)}>
-                                    <Close />
-                                </IconButton>
-                            </DialogActions>
-                            <Box m={4}>
-                                <QRCode
-                                    value={`${window.location.href}ar/${btoa(modelUri)}`}
-                                    size={512}
-                                    renderAs="canvas"
-                                />
-                            </Box>
-                            <DialogContent>
-                                <Typography>
-                                    Scan with mobile to view your NFT in AR
-                                </Typography>
-                            </DialogContent>
-                        </Dialog>
                     </>
                 }
             </CardActions>

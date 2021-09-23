@@ -10,7 +10,7 @@ import {
     Route,
 } from "react-router-dom";
 import ARViewer from './components/ARViewer';
-import ModalProvider, { useModal } from "mui-modal-provider";
+import ModalProvider from "mui-modal-provider";
 
 const theme = createTheme({
   palette: {

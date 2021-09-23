@@ -5,8 +5,7 @@ import { Connection, PublicKey } from "@solana/web3.js";
 import { FC, useEffect, useState } from "react";
 import NFT from "../components/NFT";
 import { decodeMetadata, getMetadataAddress, Metadata } from "../tools/metadata";
-
-const RAM_CREATOR = new PublicKey("EUDr68zDWdEwrrW2UUYCBFaiHVqhr47bEZQtTTX8A1e5");
+import { isRAM } from "../tools/ram";
 
 // An ui amount of exactly one and 0 decimal makes it a good candidate to be a NFT
 const getPotentialNFTs = async (connection: Connection, ownerAddress: PublicKey): Promise<PublicKey[]> => {
@@ -22,6 +21,7 @@ const getPotentialNFTs = async (connection: Connection, ownerAddress: PublicKey)
             if(info.tokenAmount.uiAmount === 1 && info.tokenAmount.decimals === 0) {
                 return new PublicKey(info.mint as string);
             }
+            return;
         })
         .filter(Boolean) as PublicKey[];
 }
@@ -38,7 +38,32 @@ const getMetadatas = async (connection: Connection, mints: PublicKey[]): Promise
         }
     }
     return metadatas;
-}
+};
+
+// RAM creator first, Model XY first in lexicographical order then whatever is left
+const sortMetadatas = (metadatas: Metadata[]): Metadata[] => {
+    const blockjams: Metadata[] = [];
+    const otherRAM: Metadata[] = [];
+    const other: Metadata[] = [];
+    for (const metadata of metadatas) {
+        if (isRAM(metadata)) {
+            if (metadata.data.name.startsWith('BJ')) {
+                blockjams.push(metadata);
+            } else {
+                otherRAM.push(metadata);
+            }
+        } else {
+            other.push(metadata);
+        }
+    }
+    blockjams.sort((a, b) => a.data.name.localeCompare(b.data.name));
+    otherRAM.sort((a, b) => a.data.name.localeCompare(b.data.name));
+    return [
+        ...blockjams,
+        ...otherRAM,
+        ...other
+    ];
+};
 
 const Home: FC = () => {
     const {connection} = useConnection();
@@ -50,7 +75,8 @@ const Home: FC = () => {
         if (!connected || !publicKey) return;
         getPotentialNFTs(connection, publicKey)
             .then(potentialNFTs => getMetadatas(connection, potentialNFTs))
-            .then(setNFTs)
+            .then(sortMetadatas)
+            .then(setNFTs);
     }, [connection, connected, publicKey])
 
     return (

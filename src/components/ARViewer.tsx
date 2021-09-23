@@ -1,6 +1,5 @@
 import { FC, useEffect, useMemo, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { updateSourceFile } from "typescript";
 
 const ARViewer: FC = () => {
     const { base64modelUri } = useParams<{base64modelUri: string}>();

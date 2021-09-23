@@ -13,6 +13,7 @@ const CassettePlayer: FC = () => {
             <div>
                 <div className="video-wrapper">
                     <iframe
+                        title="player"
                         src="https://audius.co/embed/playlist/DNKyZ?flavor=card"
                         allow="encrypted-media"
                         style={{border: "none"}}
