@@ -1,8 +1,11 @@
-import { Box, Grid, Typography } from "@material-ui/core";
+import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { useWalletDialog } from "@solana/wallet-adapter-material-ui";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { FC, useEffect, useState } from "react";
+import { useModal } from "mui-modal-provider";
+import { FC, useEffect, useMemo, useState } from "react";
+import CassettePicker from "../components/CassettePicker";
 import NFT from "../components/NFT";
 import { decodeMetadata, getMetadataAddress, Metadata } from "../tools/metadata";
 import { isRAM } from "../tools/ram";
@@ -40,14 +43,20 @@ const getMetadatas = async (connection: Connection, mints: PublicKey[]): Promise
     return metadatas;
 };
 
+type OrganizedMetadatas = {
+    blockjams: Metadata[],
+    otherRAM: Metadata[],
+    other: Metadata[]
+};
+
 // RAM creator first, Model XY first in lexicographical order then whatever is left
-const sortMetadatas = (metadatas: Metadata[]): Metadata[] => {
+const sortAndSplitMetadatas = (metadatas: Metadata[]): OrganizedMetadatas => {
     const blockjams: Metadata[] = [];
     const otherRAM: Metadata[] = [];
     const other: Metadata[] = [];
     for (const metadata of metadatas) {
         if (isRAM(metadata)) {
-            if (metadata.data.name.startsWith('BJ')) {
+            if (metadata.data.name.startsWith('Model')) {
                 blockjams.push(metadata);
             } else {
                 otherRAM.push(metadata);
@@ -56,54 +65,87 @@ const sortMetadatas = (metadatas: Metadata[]): Metadata[] => {
             other.push(metadata);
         }
     }
+
     blockjams.sort((a, b) => a.data.name.localeCompare(b.data.name));
     otherRAM.sort((a, b) => a.data.name.localeCompare(b.data.name));
-    return [
-        ...blockjams,
-        ...otherRAM,
-        ...other
-    ];
+    return {
+        blockjams,
+        otherRAM,
+        other
+    };
 };
 
 const Home: FC = () => {
-    const {connection} = useConnection();
-    const {connected, publicKey} = useWallet();
+    const { connection } = useConnection();
+    const { connected, publicKey } = useWallet();
+    const { setOpen } = useWalletDialog();
+    const { showModal } = useModal();
 
-    const [NFTs, setNFTs] = useState<Metadata[]>();
+    const [organizedMetadatas, setOrganizedMetadatas] = useState<OrganizedMetadatas>();
 
     useEffect(() => {
+        setOrganizedMetadatas(undefined);
         if (!connected || !publicKey) return;
         getPotentialNFTs(connection, publicKey)
             .then(potentialNFTs => getMetadatas(connection, potentialNFTs))
-            .then(sortMetadatas)
-            .then(setNFTs);
+            .then(sortAndSplitMetadatas)
+            .then(setOrganizedMetadatas);
     }, [connection, connected, publicKey])
+
+    const NFTs = useMemo(() => {
+        if (!organizedMetadatas) return;
+        return [
+            ...organizedMetadatas.blockjams,
+            ...organizedMetadatas.otherRAM,
+            ...organizedMetadatas.other
+        ];
+    }, [organizedMetadatas]);
+
+    const mixtapes = useMemo(() => {
+        if (!organizedMetadatas) return [];
+        return organizedMetadatas.otherRAM
+            .filter((metadata) => metadata.data.name.toLowerCase().includes('mixtape'));
+    }, [organizedMetadatas]);
 
     return (
         <Box m={2}>
-            {connected
-                ? (
-                    <Grid
-                        container
-                        //style={{flexGrow: 1}}
-                        justifyContent="center"
-                        alignItems="stretch"
-                        direction="row"
-                        spacing={3}
-                    >
-                        {NFTs?.map(nft => 
-                            <Grid item xs={6} lg={4} xl={3}>
-                                <NFT metadata={nft} />
-                            </Grid>
-                        )}
-                    </Grid>
-                )
-                : (
-                    <Typography>
-                        Connect wallet
-                    </Typography>
-                )
-            }
+            <Grid
+                container
+                justifyContent="center"
+                alignItems="stretch"
+                direction="row"
+                spacing={3}
+            >
+                {connected
+                    ? NFTs?.map(nft => 
+                        <Grid item xs={6} lg={4} xl={3}>
+                            <NFT
+                                metadata={nft}
+                                openCassettePicker={() =>
+                                    showModal(CassettePicker, { mixtapes })
+                                }
+                            />
+                        </Grid>
+                    )
+                    : (
+                        <Grid item style={{height: "80vh"}}>
+                            <Box
+                                height="100%"
+                                display="flex"
+                                justifyContent="center"
+                                flexDirection="column"
+                            >
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => setOpen(true)}
+                                >
+                                    Connect wallet to play
+                                </Button>
+                            </Box>
+                        </Grid>
+                    )
+                }
+            </Grid>
         </Box>
     );
 }

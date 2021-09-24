@@ -9,3 +9,7 @@ export const isRAM = (metadata: Metadata): boolean => {
         && metadata.data.creators[0].address === RAM_CREATOR.toBase58())
         ?? false;
 };
+
+const MIXTAPES: string[] = [
+    'RAM Mixtape Volume 1'
+];

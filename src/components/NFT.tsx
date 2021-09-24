@@ -5,12 +5,13 @@ import { IMetadataExtension, Metadata } from "../tools/metadata";
 import '@google/model-viewer/dist/model-viewer';
 import QRCode from "qrcode.react";
 import { Close, PlayArrow, MobileScreenShare, Send } from "@material-ui/icons";
-import CassettePlayer from "./CassettePlayer";
 import { useModal } from "mui-modal-provider";
+import { isRAM } from "../tools/ram";
 
 export interface NFTProps {
     metadata: Metadata;
-}
+    openCassettePicker: () => void;
+};
 
 const ModelViewer: FC<{src: string}> = (props: {src: string}) => {
     //@ts-ignore
@@ -21,21 +22,6 @@ const ModelViewer: FC<{src: string}> = (props: {src: string}) => {
         camera-controls
         style={{height: "25vh", width: "100%"}}
     />
-};
-
-type CassettePlayerDialogProps = DialogProps;
-
-const CassettePlayerDialog: FC<CassettePlayerDialogProps> = ({...props}) => {
-    const [open, setOpen] = useState(true);
-
-    return <Dialog fullScreen={true} {...props} open={open}>
-        <DialogActions>
-            <IconButton onClick={() => setOpen(false)}>
-                <Close />
-            </IconButton>
-        </DialogActions>
-        <CassettePlayer />
-    </Dialog>;
 };
 
 type QrCodeDaliogProps = DialogProps & {
@@ -67,7 +53,7 @@ const QrCodeDialog: FC<QrCodeDaliogProps> = ({modelUri, ...props}) => {
 };
 
 const NFT: FC<NFTProps> = (props: NFTProps) => {
-    const { metadata } = props;
+    const { metadata, openCassettePicker } = props;
     const [metadataExtension, setMetadataExtension] = useState<IMetadataExtension>()
     const { showModal } = useModal();
 
@@ -110,7 +96,7 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
                     </Typography>
                     <Box m={1}>
                         {metadataExtension?.attributes?.map((attribute) =>
-                            <Box m={1} display="inline">
+                            <Box m={1} display="inline-block">
                                 <Chip
                                     component="div"
                                     style={{height: "100%"}}
@@ -129,7 +115,6 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
                         )}
                     </Box>
                 </div>
-                {/* {JSON.stringify(metadata.data.creators)} */}
             </CardContent>
             <CardActions>
                 {modelUri &&
@@ -146,13 +131,15 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
                                 <Send />
                             </IconButton>
                         </Tooltip> */}
-                        <Button
-                            variant="outlined"
-                            endIcon={<PlayArrow />}
-                            onClick={() => showModal(CassettePlayerDialog)}
-                        >
-                            Play mixtape
-                        </Button>
+                        {(isRAM(metadata) && metadata.data.name.startsWith("Model"))
+                            && <Button
+                                variant="outlined"
+                                endIcon={<PlayArrow />}
+                                onClick={openCassettePicker}
+                            >
+                                Play mixtape
+                            </Button>
+                        }
                     </>
                 }
             </CardActions>
