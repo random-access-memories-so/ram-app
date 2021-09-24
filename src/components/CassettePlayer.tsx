@@ -28,6 +28,7 @@ const CassettePlayer: FC<CassettePlayerProps> = ({mixtape}) => {
         <model-viewer
             src={modelUri}
             auto-rotate
+            camera-controls
             rotation-per-second="30deg"
             style={{minHeight: "40vh", width: "100%", margin: "auto"}}
         />
