@@ -8,7 +8,7 @@ import { FC, useEffect, useMemo, useState } from "react";
 import CassettePicker from "../components/CassettePicker";
 import NFT from "../components/NFT";
 import { decodeMetadata, getMetadataAddress, Metadata } from "../tools/metadata";
-import { isRAM } from "../tools/ram";
+import { isRAM, isBlockjam } from "../tools/ram";
 
 // An ui amount of exactly one and 0 decimal makes it a good candidate to be a NFT
 const getPotentialNFTs = async (connection: Connection, ownerAddress: PublicKey): Promise<PublicKey[]> => {
@@ -56,7 +56,7 @@ const sortAndSplitMetadatas = (metadatas: Metadata[]): OrganizedMetadatas => {
     const other: Metadata[] = [];
     for (const metadata of metadatas) {
         if (isRAM(metadata)) {
-            if (metadata.data.name.startsWith('Model')) {
+            if (isBlockjam(metadata.data.name)) {
                 blockjams.push(metadata);
             } else {
                 otherRAM.push(metadata);

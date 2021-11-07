@@ -2,6 +2,12 @@ import { FC, useEffect, useMemo, useState } from "react";
 import '@google/model-viewer/dist/model-viewer';
 import { IMetadataExtension, Metadata } from "../tools/metadata";
 
+// Name to mixtape ID
+const MIXTAPE_TO_PLAYLIST_LOOKUP: Map<string, string> = new Map([
+    ['RAM Mixtape 1.1', 'DNKyZ'],
+    ['RAM Mixtape 1.2', 'DNdoN']
+]) 
+
 type CassettePlayerProps = {
     mixtape: Metadata
 };
@@ -16,6 +22,10 @@ const CassettePlayer: FC<CassettePlayerProps> = ({mixtape}) => {
             setMetadataExtension(newMetadataExtension);
         }
         fetchMetadataExtension();
+    }, [mixtape]);
+
+    const mixtapePlaylistId = useMemo(() => {
+        return MIXTAPE_TO_PLAYLIST_LOOKUP.get(mixtape.data.name);
     }, [mixtape]);
 
     const modelUri = useMemo(() => {
@@ -36,7 +46,7 @@ const CassettePlayer: FC<CassettePlayerProps> = ({mixtape}) => {
                 <div className="video-wrapper">
                     <iframe
                         title="player"
-                        src="https://audius.co/embed/playlist/DNKyZ?flavor=card"
+                        src={`https://audius.co/embed/playlist/${mixtapePlaylistId}?flavor=card`}
                         allow="encrypted-media"
                         style={{border: "none"}}
                     />

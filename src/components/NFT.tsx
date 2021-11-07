@@ -6,7 +6,7 @@ import '@google/model-viewer/dist/model-viewer';
 import QRCode from "qrcode.react";
 import { Close, PlayArrow, MobileScreenShare, Send } from "@material-ui/icons";
 import { useModal } from "mui-modal-provider";
-import { isRAM } from "../tools/ram";
+import { isBlockjam, isRAM } from "../tools/ram";
 
 export interface NFTProps {
     metadata: Metadata;
@@ -131,7 +131,7 @@ const NFT: FC<NFTProps> = (props: NFTProps) => {
                                 <Send />
                             </IconButton>
                         </Tooltip> */}
-                        {(isRAM(metadata) && metadata.data.name.startsWith("Model"))
+                        {(isRAM(metadata) && isBlockjam(metadata.data.name))
                             && <Button
                                 variant="outlined"
                                 endIcon={<PlayArrow />}
